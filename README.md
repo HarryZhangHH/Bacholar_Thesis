@@ -17,6 +17,7 @@ also has a data analysis function, which can provide real-time visualization of 
 and order information in real-time
 
 # Getting Started
+Webdite code is in the master branch!
 
 ### Reference Documentation
 For further reference, please consider the following sections:
