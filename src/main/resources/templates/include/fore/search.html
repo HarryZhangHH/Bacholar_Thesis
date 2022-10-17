@@ -1,0 +1,54 @@
+<div class th:fragment="html">
+
+    <div class="main-header">
+        <!-- CURRENCY / LANGUAGE / USER MENU -->
+        <div class="actions">
+            <div class="center-xs">
+                <!-- CURRENCY -->
+                <ul class="option-list unstyled">
+                    <li class="active"><a href="#" data-toggle="tooltip" title="" data-original-title="GBP - British Pound">£</a></li>
+                    <li><a href="#" data-toggle="tooltip" title="" data-original-title="EUR - Euro">€</a></li>
+                    <li><a href="#" data-toggle="tooltip" title="" data-original-title="CNN - RMB">¥</a></li>
+                </ul>
+                <!-- // CURRENCY -->
+                <!-- LANGUAGES -->
+                <ul class="option-list unstyled">
+                    <li class="active"><a href="#" data-toggle="tooltip" title="" data-original-title="English">EN</a></li>
+                    <li><a href="#" data-toggle="tooltip" title="" data-original-title="French">FR</a></li>
+                    <li><a href="#" data-toggle="tooltip" title="" data-original-title="Chinese">CH</a></li>
+                </ul>
+                <!-- // LANGUAGES -->
+            </div>
+            <div class="clearfix"></div>
+
+        </div>
+        <!-- // CURRENCY / LANGUAGE / USER MENU -->
+        <!-- SITE LOGO -->
+        <div class="logo-wrapper">
+            <a th:href="home" class="logo">
+                <img id="logo" src="static/img/site/logo.png" style="max-width: 50%">
+            </a>
+        </div>
+        <!-- // SITE LOGO -->
+        <!-- // SEARCH SECTION -->
+        <form action="search" method="get" >
+            <div class="searchDiv">
+                <input name="keyword" type="text" placeholder="sunglasses ">
+                <button  type="submit" class="searchButton">Search</button>
+                <div class="searchBelow">
+                    <!--遍历分类 categories_below_search，使用index下标 进行选择哪些分类进行显示 ！-->
+                    <!--th:if="${status.index>=5 && status.index<=8} 选择分类，只有符合条件的分类 才能显示 -->
+                    <span th:each="c,status: ${application.categories_below_search}" th:if="${status.index>=5 && status.index<=8}">
+                    <a th:href="@{'category?cid='+${c.id}}" th:text="${c.name}" ></a>
+                    <span th:if="${status.index!=8}">|</span>
+                </span>
+
+                </div>
+            </div>
+        </form>
+    </div>
+
+
+
+
+</div>

@@ -1,0 +1,128 @@
+<div th:fragment="html">
+
+    <!--判断输入的账号密码是否为空，判断登录后返回的结果是否有错误 -->
+    <script>
+
+        $(function () {
+            var dataValue={
+                uri:'foreregister',
+                result:[],
+                user:{username:'',phonenumber:'',password:'',repeatpassword:''}
+            }
+
+
+            var vue=new Vue({
+                el:'#workingArea',
+                data:dataValue,
+                mounted:function () {
+                    //默认链接
+                    linkDefaultActions();
+                },
+                methods:{
+
+                    //登录函数。
+                    register:function () {
+
+                        var url=this.uri;
+
+
+                        //判断是否输入了用户名
+                        if (0==this.user.username.length){
+                            $("span.errorMessage").html("Please enter username")
+                            //使得该下面的内容可见
+                            $("div.registerErrorMessageDiv").css("visibility","visible");
+                            return
+
+                        }
+                        //判断电话号是否已经输入
+                        if(0==this.user.phonenumber.length){
+                            $("span.errorMessage").html("Please enter phone number.")
+                            $("div.registerErrorMessageDiv").css("visibility","visible");
+                            return
+                        }
+                        //判断电话号是否正确
+                        if(!(!(/^1(3|4|5|6|7|8|9)d{9}$/.test(this.user.phonenumber)))){
+                            $("span.errorMessage").html("The phone number isn't correct.")
+                            $("div.registerErrorMessageDiv").css("visibility","visible");
+                            return
+                        }
+                        //判断密码是否已经输入
+                        if (0==this.user.password.length){
+                            $("span.errorMessage").html("Please enter password")
+                            $("div.registerErrorMessageDiv").css("visibility","visible");
+                            return
+                        }
+                        //判断，第一次和第二次输入的密码是否相同
+                        if (this.user.password!=this.user.repeatpassword){
+                            $("span.errorMessage").html("The two passwords entered are different, please re-enter");
+                            $("div.registerErrorMessageDiv").css("visibility","visible");
+
+                            return ;
+                        }
+
+                        axios.post(url,this.user).then(function (value) {
+                            this.result=value.data;
+                            if (result.code==0){
+                                //注册成功 ，跳转至注册成功页面
+                                location.href="registerSuccess";
+                            }else {
+                                $("span.errorMessage").html(result.message);
+                                $("div.registerErrorMessageDiv").css("visibility","visible");
+                            }
+                        })
+
+
+                    }
+                }
+
+            })
+
+        })
+
+
+    </script>
+
+
+
+    <div class="registerDiv" style="background: url('static/img/site/LoginBackground.png'); height: 500px">
+        <div class="registerErrorMessageDiv">
+            <div class="alert alert-danger" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"></button>
+                <span class="errorMessage"></span>
+            </div>
+        </div>
+
+        <table class="registerTable" align="center">
+            <tr>
+                <td  class="registerTip registerTableLeftTD" style="font-size: 15px">Set username</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td class="registerTableLeftTD">Login name</td>
+                <td  class="registerTableRightTD"><input v-model="user.username" type="text" placeholder="Once the username is set successfully, it cannot be modified." > </td>
+            </tr>
+            <tr>
+                <td class="registerTableLeftTD">Phone number</td>
+                <td  class="registerTableRightTD"><input v-model="user.phonenumber" type="number" placeholder="Input your phone number, use for password retrieval." > </td>
+            </tr>
+            <tr>
+                <td  class="registerTip registerTableLeftTD" style="font-size: 14px">Set login password</td>
+                <td  class="registerTableRightTD">Verify when logging in, protect account information.</td>
+            </tr>
+            <tr>
+                <td class="registerTableLeftTD">Login password</td>
+                <td class="registerTableRightTD"><input v-model="user.password"  type="password"  placeholder="Set your login password." > </td>
+            </tr>
+            <tr>
+                <td class="registerTableLeftTD">Confirm password</td>
+                <td class="registerTableRightTD"><input v-model="user.repeatpassword"   type="password"  placeholder="Please enter your password again." > </td>
+            </tr>
+
+            <tr>
+                <td colspan="2" class="registerButtonTD">
+                    <a @click="register"><button>SUBMIT</button></a>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>

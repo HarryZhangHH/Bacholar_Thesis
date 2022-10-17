@@ -1,0 +1,74 @@
+spring:
+  datasource:
+  # 驱动信息配置
+    type: com.zaxxer.hikari.HikariDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/final_project?useSSL=false&useUnicode=true&serverTimezone=UTC
+    username: root
+    password: 123
+    hikari:
+      minimum-idle: 5
+      maximum-pool-size: 15
+      auto-commit: true
+      idle-timeout: 300000
+      max-lifetime: 1800000
+      connection-timeout: 30000
+      connection-test-query: SELECT 1
+
+  # 连接池的配置信息
+    filters: stat
+    maxActive: 20
+    initialSize: 1
+    maxWait: 60000
+    minIdle: 1
+    timeBetweenEvictionRunsMillis: 60000
+    minEvictableIdleTimeMillis: 300000
+    validationQuery: select 'x'
+    testWhileIdle: true
+    testOnBorrow: false
+    testOnReturn: false
+    poolPreparedStatements: true
+    maxOpenPreparedStatements: 20
+
+  #jpa默认的实体类字段会 自动加上 下划线"_" ,这个是把 下划线去掉
+  #jpa的正向工程
+  #显示 hibernate运行的 sql 语句
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+  data:
+    elasticsearch:
+      client:
+        reactive:
+          endpoints: 127.0.0.1:9200
+      # Additional properties used to configure the client.
+      repositories:
+        enabled: true
+      cluster-nodes: 127.0.0.1:9300
+      cluster-name: my-application
+  thymeleaf:
+    #LEGACYHTML5表示经典html5模式，即允许非严格的html出现，元素少点什么也可以编译通过
+    #thymeleaf
+    mode: LEGACYHTML5
+    encoding: UTF-8
+    #    servlet:
+    #      content-type: text/html
+    cache: false
+
+  main:
+    allow-bean-definition-overriding: true
+
+  mvc:
+    static-path-pattern: /static/**
+  jackson:
+    date-format: yyyy-MM-dd
+
+server:
+  port: 8081
+#  servlet:
+#    context-path: /final_project
+
+author:
+  name: Haohui Zhang

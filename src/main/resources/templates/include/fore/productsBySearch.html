@@ -1,0 +1,35 @@
+<div class th:fragment="html">
+    <div class="search_top">
+        <div class="sortBtn"><a @click="sortHandle(1)">Default</a></div>
+        <div class="sortBtn"><a @click="sortHandle(2)">Price</a></div>
+        <div class="sortBtn"><a @click="sortHandle(3)">Sales</a></div>
+        <div class="sortBtn"><a @click="sortHandle(4)">Comment</a></div>
+    </div>
+    <div class="searchProducts" style="padding-top: 50px">
+        <div class="productUnit" price="${p.promotePrice}" v-for="p in products" >
+            <a :href="'product?pid='+p.id">
+                <img class="productImage" :src="'static/img/productSingle/'+p.firstProductImage.id+'.jpg'">
+            </a>
+            <span class="productPrice">
+                {{p.promotePrice|formatMoneyFilter}}
+            </span>
+            <a class="productLink" :href="'product?pid='+p.id">
+                {{p.name|subStringFilter(0,50)}}
+            </a>
+
+            <a  class="tmallLink" style="visibility: hidden" :href="'product?pid='+p.id">TMT</a>
+
+            <div class="show1 productInfo">
+                <span class="monthDeal ">Sale <span class="productDealNumber">{{p.saleCount}}</span></span>
+                <span class="productReview">Comment<span class="productReviewNumber">{{p.reviewCount}}</span></span>
+                <span class="wangwang"><img class="search-logo" src="static/img/site/logo.png"></span>
+            </div>
+
+        </div>
+        <div v-if="index==0" class="noMatch">There are no products that meet the conditions</div>
+
+
+        <div style="clear:both"></div>
+    </div>
+    <div v-if="index!=0" class="totalSearch">Total searched: {{totalHits}}</div>
+</div>

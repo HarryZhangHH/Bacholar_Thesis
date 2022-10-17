@@ -1,0 +1,16 @@
+<!--<?xml version="1.0" encoding="ISO-8859-1"?>-->
+
+<!--<configuration>-->
+
+<!--    <settings>-->
+<!--        <setting name="cacheEnabled" value="true" />&lt;!&ndash; ???????? &ndash;&gt;-->
+<!--        <setting name="useGeneratedKeys" value="true" /> &lt;!&ndash;???????????????keyProperty?id??&ndash;&gt;-->
+<!--        <setting name="defaultExecutorType" value="REUSE" /> &lt;!&ndash;????????&ndash;&gt;-->
+<!--        <setting name="logImpl" value="STDOUT_LOGGING"/> &lt;!&ndash;??sql??????&ndash;&gt;-->
+<!--    </settings>-->
+
+<!--    <typeAliases>-->
+<!--        <package name="com.bgy.springboot.model"/>-->
+<!--    </typeAliases>-->
+
+<!--</configuration>-->

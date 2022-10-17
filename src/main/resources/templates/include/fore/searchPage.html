@@ -1,0 +1,54 @@
+<div class th:fragment="html">
+    <script>
+        $(function(){
+            //获取参数
+            var keyword = getUrlParms("keyword");
+            var data4Value = {
+                uri:'foresearch',
+                totalHits:0,
+                products:[]
+
+            };
+            //ViewModel
+            var vue = new Vue({
+                el: '#workingArea',
+                data: data4Value,
+                mounted:function(){ //mounted　表示这个 Vue 对象加载成功了，加载成功后，自动调用函数。
+                    this.load();
+                },
+                methods: {
+                    load:function(){
+                        //地址
+                        var url =  this.uri+"?keyword="+keyword;
+                        axios.get(url).then(function(value) {
+                            var result=value.data;
+                            vue.totalHits=result.data.totalHits;
+                            vue.products=result.data.products;
+                            vue.$nextTick(function(){
+                                linkDefaultActions();
+                            })
+                        });
+                    },
+                    //比較
+                    sortHandle:function(type){
+                        var  url="forecompare?keyword="+keyword+"&type="+type;
+                        axios.post(url).then(function (value) {
+                            var result=value.data;
+                            vue.totalHits=result.data.totalHits;
+                            vue.products=result.data.products;
+                            vue.$nextTick(function(){
+                                linkDefaultActions();
+                            })
+                        });
+                    }
+                }
+            });
+        })
+    </script>
+
+    <div id="searchResult">
+        <div class="searchResultDiv">
+            <div th:replace="include/fore/productsBySearch::html" ></div>
+        </div>
+    </div>
+</div>

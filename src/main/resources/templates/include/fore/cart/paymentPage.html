@@ -1,0 +1,51 @@
+<!--付款页面-->
+<div th:fragment="html">
+    <script>
+        $(function(){
+            var oid = getUrlParms("oid");
+            var total = getUrlParms("total");
+            var data4Vue = {
+                oid:'',
+                total:''
+            };
+            //ViewModel
+            var vue = new Vue({
+                el: '#workingArea',
+                data: data4Vue,
+                mounted:function(){ //mounted　表示这个 Vue 对象加载成功了
+                    this.oid = oid;
+                    this.total = total;
+                }
+            });
+        })
+    </script>
+    <div class="aliPayPageDiv">
+        <!--        <div class="aliPayPageLogo">-->
+        <!--            <img class="pull-left" src="img/site/simpleLogo.png">-->
+        <!--            <div style="clear:both"></div>-->
+        <!--        </div>-->
+
+        <div>
+            <span class="confirmMoneyText">Select Payment Method</span>
+            <span class="confirmMoney">
+            ￥ {{total|formatMoneyFilter}} </span>
+
+        </div>
+        <table style="margin: auto">
+            <tr>
+                <td><a :href="'alipay?oid='+oid+'&total='+total"><img class="aliPayImg" src="static/img/payment/images/1.jpg"></a></td>
+                <td><a :href="'alipay?oid='+oid+'&total='+total"><img class="aliPayImg" src="static/img/payment/images/2.jpg"></a></td>
+            </tr>
+            <tr>
+                <td><a :href="'alipay?oid='+oid+'&total='+total"><img class="aliPayImg" src="static/img/payment/images/3.jpg"></a></td>
+                <td><a :href="'alipay?oid='+oid+'&total='+total"><img class="aliPayImg" src="static/img/payment/images/4.jpg"></a></td>
+            </tr>
+            <tr>
+                <td><a :href="'alipay?oid='+oid+'&total='+total"><img class="aliPayImg" src="static/img/payment/images/5.jpg"></a></td>
+                <td><a :href="'alipay?oid='+oid+'&total='+total"><img class="aliPayImg" src="static/img/payment/images/6.jpg"></a></td>
+            </tr>
+        </table>
+
+
+    </div>
+</div>

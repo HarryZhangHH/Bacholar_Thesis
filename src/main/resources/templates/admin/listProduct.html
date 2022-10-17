@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="include/admin/adminHeader::html('产品管理')" ></head>
+<body>
+<div th:replace="include/admin/adminNavigator::html" ></div>
+<script>
+   $(function () {
+       var cid=getUrlParms("cid");
+
+       var dataValue={
+           uri:'products',
+           pathUrl:'admin_product_list',
+           beans:[],
+           pagination:{},
+           bean: {id:0,name:'','subTitle':'','originalPrice':00,'promotePrice':00,'stock':0,category:{'id':0}},
+           category:''
+       }
+        var vue=new Vue({
+            el:'#workingArea',
+            data:dataValue,
+            mounted:function () { //vue加载成功后，就会运行
+                //通过id获取category
+                this.getCategory(cid);
+                //获取该分类下的产品。
+                this.list(0)
+
+            },
+            methods: {
+                //通过id获取category
+                getCategory:function (cid) {
+                    var url="categories/"+cid;
+                    axios.get(url).then(function (value) {
+                        vue.category=value.data;
+                    })
+                },
+                //获取product数据
+                list:function (start) {
+                    var path="categories/"+cid+"/"+this.uri+"?start="+start;
+                    axios.get(path).then(function (value) {
+                        vue.pagination=value.data
+                        vue.beans=value.data.content;
+
+                    })
+                },
+                //添加product数据
+                add:function () {
+                    //判断是否为空
+                    if (!checkEmpty(this.bean.name, "Product name"))
+                        return;
+                    if (!checkEmpty(this.bean.subTitle, "Subtitle"))
+                        return;
+                    if (!checkNumber(this.bean.originalPrice, "Original Price"))
+                        return;
+                    if (!checkNumber(this.bean.promotePrice, "Promote Price"))
+                        return;
+                    if (!checkInt(this.bean.stock, "Stock"))
+                        return;
+                    var uri=this.uri;
+                    //cid
+                    this.bean.category.id=cid
+                    axios.post(uri,this.bean).then(function (value) {
+                        //显示
+                        vue.list(0);
+                        //清空数据
+                        vue.bean={id:0,name:'','subTitle':'','originalPrice':00,'promotePrice':00,'stock':00,category:{'id':0}};
+
+                    })
+                    
+                },
+                //删除产品
+                deleteBean:function (id) {
+                    var uri=this.uri+"/"+id;
+                    axios.delete(uri).then(function (value) {
+                       vue.list(0)
+                    })
+                    
+                },
+                jump: function(page){
+                    jump(page,vue); //定义在adminHeader.html 中
+                },
+                jumpByNumber: function(start){
+                    jumpByNumber(start,vue);
+                }
+            }
+        })
+   })
+
+
+
+
+</script>
+
+<div id="workingArea" >
+    <ol class="breadcrumb">
+        <li><a href="admin_category_list">All category</a></li>
+        <li><a :href="'admin_product_list?cid='+category.id">{{category.name}}</a></li>
+        <li class="active">Product Management</li>
+    </ol>
+
+    <div class="listDataTableDiv">
+        <table class="table table-striped table-bordered table-hover table-condensed">
+            <thead>
+            <tr class="success">
+                <th>ID</th>
+                <th>Image</th>
+                <th>Product name</th>
+                <th>Subtitle</th>
+                <th width="53px">Original price</th>
+                <th width="80px">Promote price</th>
+                <th width="80px">Stock</th>
+
+                <th width="80px">Image management</th>
+                <th width="80px">Set property</th>
+                <th>Edit</th>
+                <th>Delete</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr v-for="bean in beans ">
+                <td>{{bean.id}}</td>
+                <td>
+                    <img v-if="null != bean.firstProductImage" width="40px" :src="'static/img/productSingle/'+bean.firstProductImage.id+'.jpg'">
+                </td>
+                <td>{{bean.name}}</td>
+                <td>{{bean.subTitle}}</td>
+                <td>{{bean.originalPrice}}</td>
+                <td>{{bean.promotePrice}}</td>
+                <td>{{bean.stock}}</td>
+
+                <td>
+                    <a :href="'admin_productImage_list?pid=' + bean.id "><span class="glyphicon glyphicon-picture"></span></a>
+                </td>
+                <td>
+                    <a :href="'admin_propertyValue_edit?pid=' + bean.id "><span class="glyphicon glyphicon-th-list"></span></a>
+                </td>
+
+                <td>
+                    <a :href="'admin_product_edit?id=' + bean.id "><span class="glyphicon glyphicon-edit"></span></a>
+                </td>
+                <td>
+                    <a href="#nowhere"  @click="deleteBean(bean.id)"><span class="   glyphicon glyphicon-trash"></span></a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div th:replace="include/admin/adminPage::html" ></div>
+
+    <div class="panel panel-warning addDiv">
+        <div class="panel-heading">Add product</div>
+        <div class="panel-body">
+            <table class="addTable">
+                <tr>
+                    <td>Product name</td>
+                    <td><input  @keyup.enter="add" v-model.trim="bean.name" type="text" class="form-control"></td>
+                </tr>
+                <tr>
+                    <td>Product subtitle</td>
+                    <td><input  @keyup.enter="add" v-model.trim="bean.subTitle" type="text"
+                                class="form-control"></td>
+                </tr>
+                <tr>
+                    <td>Original price</td>
+                    <td><input  @keyup.enter="add" v-model.trim="bean.originalPrice"  type="text"
+                                class="form-control"></td>
+                </tr>
+                <tr>
+                    <td>Promote price</td>
+                    <td><input  @keyup.enter="add" v-model.trim="bean.promotePrice" type="text"
+                                class="form-control"></td>
+                </tr>
+                <tr>
+                    <td>Stock</td>
+                    <td><input  @keyup.enter="add" v-model.trim="bean.stock"  type="text"
+                                class="form-control"></td>
+                </tr>
+
+                <tr class="submitTR">
+                    <td colspan="2" align="center">
+                        <a href="#nowhere"  @click="add" class="btn btn-success"><S>SUBMIT</S></a>
+                    </td>
+                </tr>
+            </table>
+
+        </div>
+    </div>
+</div>
+
+<div th:replace="include/admin/adminFooter::html" ></div>
+</body>
+</html>

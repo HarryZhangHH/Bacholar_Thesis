@@ -1,0 +1,125 @@
+<!--支付购买后的商品评价 -->
+
+<div th:fragment="html">
+    <script>
+
+        $(function () {
+            var oid=getUrlParms("oid");
+            var data4Value={
+                uri:'forereview',
+                orders:[],
+                o:null,
+                p:[],
+                reviews:[],
+                showReviews:false,
+                content:''
+            }
+
+            var vue=new Vue({
+                el:'#workingArea',
+                data:data4Value,
+                mounted:function () {
+                    this.load();  //当页面加载成功后，自动调用该方法
+
+                },
+                methods:{
+                    //初始化 方法
+                    load:function () {
+                        //产品评价地址
+                        var url=this.uri+"?oid="+oid;
+                        axios.get(url).then(function (value) {
+                            //获取返回的结果
+                            var result=value.data;
+                            vue.o=result.data.o;
+                            vue.p=result.data.p;
+                            vue.reviews=result.data.reviews;
+                            vue.$nextTick(function () {
+                                linkDefaultActions();
+                            })
+                        })
+                    },
+                    //添加评论
+                    doreview:function () {
+                        var url="foredoreview?oid="+vue.o.id+"&pid="+vue.p.id+"&content="+vue.content;
+                        axios.post(url).then(function (value) {
+                            var result=value.data;
+                            //显示评价
+                            vue.showReviews=true;
+                            //重新获取数据
+                            vue.load();
+                        })
+
+                    }
+                }
+            })
+        })
+
+    </script>
+    <div class="reviewDiv">
+        <div v-for="product in p">
+        <div class="reviewProductInfoDiv">
+            <div class="reviewProductInfoImg"><img v-if="null!=product.firstProductImage" width="400px" height="400px" :src="'static/img/productSingle/'+product.firstProductImage.id+'.jpg'"></div>
+            <div class="reviewProductInfoRightDiv">
+                <div class="reviewProductInfoRightText">
+                    {{product.name}}
+                </div>
+                <table class="reviewProductInfoTable" style="vertical-align: middle">
+                    <tr>
+                        <td width="75px">Price:</td>
+                        <td><span class="reviewProductInfoTablePrice">￥{{product.originalPrice|formatMoneyFilter}}</span> RMB </td>
+                    </tr>
+                    <tr>
+                        <td>Delivery</td>
+                        <td>.f:  0.00</td>
+                    </tr>
+                    <tr>
+                        <td>Monthly sales:</td>
+                        <td><span class="reviewProductInfoTableSellNumber">{{product.saleCount}}</span> piece</td>
+                    </tr>
+                </table>
+
+                <div class="reviewProductInfoRightBelowDiv">
+                    <span class="reviewProductInfoRightBelowImg"><img src="static/img/site/reviewLight.png"> </span>
+                    <span v-if="null!=o" class="reviewProductInfoRightBelowText" >What you are viewing now is the information of the product you have purchased
+    You purchased the product at {{o.createDate | formatDateFilter('YYYY-MM-DD')}}  </span>
+
+                </div>
+            </div>
+            <div style="clear:both"></div>
+        </div>
+        <div class="reviewStasticsDiv">
+            <div class="reviewStasticsLeft">
+                <div class="reviewStasticsLeftTop"></div>
+                <div class="reviewStasticsLeftContent">Cumulative comment <span class="reviewStasticsNumber"> {{product.reviewCount}}</span></div>
+                <div class="reviewStasticsLeftFoot"></div>
+            </div>
+            <div class="reviewStasticsRight">
+                <div class="reviewStasticsRightEmpty"></div>
+                <div class="reviewStasticsFoot"></div>
+            </div>
+        </div>
+
+        <div v-show="showReviews" class="reviewDivlistReviews">
+            <div v-for="r in reviews" class="reviewDivlistReviewsEach">
+                <div class="reviewDate">{{r.createDate| formatDateFilter}}</div>
+                <div class="reviewContent" style="vertical-align: middle">{{r.content}}</div>
+                <div class="reviewUserInfo pull-right">{{r.user.anonymousName}}<span class="reviewUserInfoAnonymous">(anonymous)</span></div>
+            </div>
+        </div>
+
+        <div v-show="!showReviews" class="makeReviewDiv">
+            <div class="makeReviewText">Other buyers, need your advice!</div>
+            <table class="makeReviewTable">
+                <tr>
+                    <td class="makeReviewTableFirstTD">Evaluate Product</td>
+                    <td><textarea v-model="content"></textarea></td>
+                </tr>
+            </table>
+        </div>
+
+        </div>
+            <div class="makeReviewButtonDiv">
+                <button @click="doreview" type="submit">Submit comment</button>
+            </div>
+    </div>
+</div>
