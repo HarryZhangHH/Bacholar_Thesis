@@ -1,4 +1,3 @@
-## Bacholar_Thesis
 # An E-commerce Website Migration Software Tool for Small Businesses
 The project aims to develop a migration software tool for small businesses on a well-known
 e-commerce platform, such as eBay and Taobao, so that they can launch their independent e-
